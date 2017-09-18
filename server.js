@@ -22,22 +22,32 @@ app.use(bodyParser.urlencoded({
 // Make public a static dir
 app.use(express.static("public"));
 
-// // Database configuration with mongoose
-// mongoose.connect("mongodb://localhost/week18day3mongoose");
-// var db = mongoose.connection;
+// 
 
-// // Show any mongoose errors
-// db.on("error", function(error) {
-//   console.log("Mongoose Error: ", error);
-// });
-
-// // Once logged in to the db through mongoose, log a success message
-// db.once("open", function() {
-//   console.log("Mongoose connection successful.");
-// });
+// Routes //
+// A GET request to scrape the contents of the website
+app.get('/scrape', function (req, res) {
+    res.send("Hello, world");
+});
 
 // Listen on port 3000
 app.listen(3000, function() {
-  console.log("App running on port 3000!");
+    // Request to grab body of html with request
+    request("http://www.npr.org/sections/news/", function (error, response, html){
+        // Load into cheerio and save it into $ for a shorthand selector
+        var $ = cheerio.load(html);
+
+        $("a h2").each(function(i, element) {
+
+            // Save an empty Result object
+            var result = {};
+
+            // Add the text and href of every link, and save them as properties of the result object
+            result.title = $(this).children("a").text();
+            result.link = $(this).children("a").attr("href");
+
+        });
+    });
+
 });
 
