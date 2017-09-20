@@ -9,7 +9,7 @@ var articleSchema = new Schema({
         type: String,
         required: true
     },
-    sumary: {
+    summary: {
         type: String,
         required: true,
     },

@@ -41,6 +41,16 @@ app.get('/scrape', function (req, res) {
     res.send("Hello, world");
 });
 
+app.get('/testschema', function (req, res) {
+    // construct a new article object
+    // save to your database
+    // send database response to the view
+    // response should have newly created article object
+    // if not, something went wrong.
+    res.send("Hello, world");
+});
+
+
 // Listen on port 3000
 app.listen(3000, function() {
     // Request to grab body of html with request
@@ -56,9 +66,7 @@ app.listen(3000, function() {
             // Add the text and href of every link, and save them as properties of the result object
             result.title = $(this).children("a").text();
             result.link = $(this).children("a").attr("href");
-
         });
-    });
-
+    });     
 });
 
