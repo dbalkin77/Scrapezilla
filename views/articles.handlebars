@@ -1,0 +1,14 @@
+<div class="jumbotron">
+  <h1>All Articles</h1>
+  <p>Click on an article to read it, or leave a note.</p>
+</div>
+
+{{#each articles}}
+  <div class="input-group">
+    <a href="{{this.link}}" target="_blank" class="form-control">{{this.title}}</a>
+    <span class="input-group-btn">
+      <a href="/articles/{{this.id}}" class="btn btn-default">Comment</a>
+    </span>
+  </div>
+  <br>
+{{/each}}
