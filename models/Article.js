@@ -7,7 +7,8 @@ const Schema = mongoose.Schema;
 var articleSchema = new Schema({
     headline: {
         type: String,
-        required: true
+        required: true,
+        unique: true
     },
     summary: {
         type: String,
@@ -16,7 +17,11 @@ var articleSchema = new Schema({
     url: {
         type: String,
         required: true
-    }
+    },
+    notes: [{
+        type: Schema.Types.ObjectId,
+        ref: "note"
+    }] 
 });
 
 // Create the Article model with the ArticleSchema
