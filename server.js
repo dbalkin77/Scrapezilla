@@ -1,41 +1,24 @@
-// Dependencies
-const express = require("express");
-const bodyParser = require('body-parser');
-const exphbs  = require('express-handlebars');
-const mongoose = require('mongoose');
+var express = require('express');
+var exphbs = require('express-handlebars');
+var bodyParser = require('body-parser');
+var mongoose = require('mongoose');
+var request = require('request');
+var cheerio = require('cheerio');
 
-// Scraping Tools
-const cheerio = require("cheerio");
-const request = require("request");
+var Article = require('./models/Article.js');
+var Comment = require('./models/Comment.js');
 
-// Models
-const Article = require("./models/Article.js");
+var app = express();
 
-// Set mongoose to leverage built in JavaScript ES6b Promises
-mongoose.Promise = Promise;
-
-// Initialize Express
-const app = express();
-
-// Initialize bodyParser
 app.use(bodyParser.urlencoded({
-  extended: false
+    extended: false
 }));
+app.use(express.static('public'));
 
-// Make public a static dir
-app.use(express.static("public"));
-
-mongoose.connect("mongodb://localhost/Scrapezilla");
+mongoose.connect('mongodb://localhost/Scrapezilla');
 var db = mongoose.connection;
-
-// Show any mongoose errors
-db.on("error", function(error) {
-  console.log("Mongoose Error: ", error);
-});
-
-// Once logged in to the db through mongoose, log a success message
-db.once("open", function() {
-  console.log("Mongoose connection successful.");
+db.on('error', function (err) {
+    console.log('Mongoose Error: ', err);
 });
 
 app.engine('handlebars', exphbs({
@@ -43,8 +26,7 @@ app.engine('handlebars', exphbs({
 }));
 app.set('view engine', 'handlebars');
 
-// Routes //
-// A GET request to scrape the contents of the website
+// Routes
 app.get('/', function (req, res) {
     res.redirect('/scraping');
 });
@@ -88,14 +70,14 @@ app.get('/articles', function (req, res) {
 
 app.get('/articles/:id', function (req, res) {
     Article.findOne({'_id': req.params.id})
-        .populate('notes')
+        .populate('comments')
         .exec(function (err, doc) {
             if (err) {
                 console.log(err);
             }
             else {
                 // console.log(doc);
-                res.render('articleNotes', {
+                res.render('articleComments', {
                     article: doc
                 });
             }
@@ -103,15 +85,15 @@ app.get('/articles/:id', function (req, res) {
 });
 
 app.post('/articles/:id', function (req, res) {
-    var note = req.body;
-    var newNote = new Note(note);
+    var comment = req.body;
+    var newComment = new Comment(comment);
 
-    newNote.save(function (err, doc) {
+    newComment.save(function (err, doc) {
         if (err) {
             console.log(err);
         } else {
             var articleId = req.params.id;
-            Article.findOneAndUpdate({'_id': articleId}, {$push: {'notes': doc._id}})
+            Article.findOneAndUpdate({'_id': articleId}, {$push: {'comments': doc._id}})
                 .exec(function (err, doc) {
                     if (err) {
                         console.log(err);
@@ -125,17 +107,17 @@ app.post('/articles/:id', function (req, res) {
 
 app.post('/articles/:aId/delete/:cId', function (req, res) {
     var articleId = req.params.aId;
-    var noteId = req.params.cId;
+    var commentId = req.params.cId;
 
-    Article.update({'_id': articleId}, {$pull: {'notes': nodeId}}, {'multi': false}, function (err, res) {
+    Article.update({'_id': articleId}, {$pull: {'comments': commentId}}, {'multi': false}, function (err, res) {
         if (err) {
             console.log(err);
         } else {
-            Note.remove({'_id': commentId}, function (err, res) {
+            Comment.remove({'_id': commentId}, function (err, res) {
                 if(err) {
                     console.log(err);
                 } else {
-                    console.log('Successful deletion of Note');
+                    console.log('Successful deletion of comment');
                 }
             });
         }
@@ -144,8 +126,6 @@ app.post('/articles/:aId/delete/:cId', function (req, res) {
     res.redirect('/articles/' + articleId);
 });
 
-// Listen on port 3000
-app.listen(3000, function() {
-    console.log('app running on port 3000');
+app.listen(3000, function () {
+    console.log('App running on port 3000');
 });
-
