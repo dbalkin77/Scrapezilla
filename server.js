@@ -9,19 +9,34 @@ var Article = require('./models/Article.js');
 var Comment = require('./models/Comment.js');
 
 var app = express();
-var uri =  "mongodb://heroku_hzv7t8hl:q9bd821e9rt3u6jumtq9gh5bl9@ds135514.mlab.com:35514/heroku_hzv7t8hl"
+// SEAM
 
+
+// Here we find an appropriate database to connect to, defaulting to
+// localhost if we don't find one.
+var uristring =
+process.env.MONGOLAB_URI ||
+process.env.MONGOHQ_URL ||
+'mongodb://localhost/HelloMongoose';
+
+// Makes connection asynchronously.  Mongoose will queue up database
+// operations and release them when the connection is complete.
+mongoose.createConnection(uristring, function (err, res) {
+    if (err) {
+    console.log ('ERROR connecting to: ' + uristring + '. ' + err);
+    } else {
+    console.log ('Succeeded connected to: ' + uristring);
+    }
+});
+
+
+//  SEAM
 app.set('port', (process.env.PORT || 3000));
 
 app.use(bodyParser.urlencoded({
     extended: false
 }));
 app.use(express.static('public'));
-
-mongoose.createConnection(uri , function (error) {
-    if (error) console.error(error);
-    else console.log('mongo connected');
-});
 
 app.engine('handlebars', exphbs({
     defaultLayout: 'main'
