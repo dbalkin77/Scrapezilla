@@ -9,6 +9,7 @@ var Article = require('./models/Article.js');
 var Comment = require('./models/Comment.js');
 
 var app = express();
+var uri =  "mongodb://heroku_hzv7t8hl:q9bd821e9rt3u6jumtq9gh5bl9@ds135514.mlab.com:35514/heroku_hzv7t8hl"
 
 app.set('port', (process.env.PORT || 3000));
 
@@ -17,10 +18,9 @@ app.use(bodyParser.urlencoded({
 }));
 app.use(express.static('public'));
 
-mongoose.connect('mongodb://localhost/Scrapezilla');
-var db = mongoose.connection;
-db.on('error', function (err) {
-    console.log('Mongoose Error: ', err);
+mongoose.connect(uri , function (error) {
+    if (error) console.error(error);
+    else console.log('mongo connected');
 });
 
 app.engine('handlebars', exphbs({
