@@ -9,8 +9,6 @@ var Article = require('./models/Article.js');
 var Comment = require('./models/Comment.js');
 
 var app = express();
-// SEAM
-
 
 // Here we find an appropriate database to connect to, defaulting to
 // localhost if we don't find one.
@@ -29,8 +27,6 @@ mongoose.createConnection(uristring, function (err, res) {
     }
 });
 
-
-//  SEAM
 app.set('port', (process.env.PORT || 3000));
 
 app.use(bodyParser.urlencoded({
@@ -45,7 +41,7 @@ app.set('view engine', 'handlebars');
 
 // Routes
 app.get('/', function (req, res) {
-    res.redirect('/scraping');
+    // res.redirect('/scraping');
 });
 
 app.get('/scraping', function (req, res) {
