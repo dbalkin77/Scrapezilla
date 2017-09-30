@@ -40,6 +40,7 @@ app.engine('handlebars', exphbs({
 app.set('view engine', 'handlebars');
 
 // Routes
+// DO NOT TOUCH THIS ROUTE
 app.get('/', function (req, res) {
     // res.redirect('/scraping');
     res.render('index')
@@ -59,7 +60,9 @@ app.get('/scraping', function (req, res) {
 
             entry.save(function (err, doc) {
                 if (err) {
-                    console.log('Article already in database');
+                    console.log(err.message);
+                    console.log(err.stack);
+                    res.status(500).send('Something broke!')
                 } else {
                     console.log('Finished scraping');
                 }
