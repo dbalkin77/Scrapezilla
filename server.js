@@ -18,7 +18,7 @@ app.use(bodyParser.urlencoded({
 }));
 app.use(express.static('public'));
 
-mongoose.connect(uri , function (error) {
+mongoose.createConnection(uri , function (error) {
     if (error) console.error(error);
     else console.log('mongo connected');
 });
