@@ -42,6 +42,7 @@ app.set('view engine', 'handlebars');
 // Routes
 app.get('/', function (req, res) {
     // res.redirect('/scraping');
+    res.render('index')
 });
 
 app.get('/scraping', function (req, res) {
